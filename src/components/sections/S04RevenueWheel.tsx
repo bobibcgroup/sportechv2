@@ -70,7 +70,7 @@ export function S04RevenueWheel() {
 
           {/* Right: wheel diagram */}
           <div className="flex items-center justify-center">
-            <div ref={wheelRef} className="relative w-72 h-72" style={{ opacity: 0 }}>
+            <div ref={wheelRef} className="relative w-72 h-72" style={{ opacity: 0, willChange: 'transform, opacity' }}>
               <div className="absolute inset-0 rounded-full border-2 border-yellow/20" />
               <div className="absolute inset-4 rounded-full border border-white/10" />
 
