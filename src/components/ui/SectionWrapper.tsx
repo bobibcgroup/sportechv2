@@ -22,7 +22,7 @@ export function SectionWrapper({ children, className = '', id, reducedFallback }
     >
       <motion.div
         initial={reducedFallback ? false : { opacity: 0, y: 30 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
+        animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
         {children}

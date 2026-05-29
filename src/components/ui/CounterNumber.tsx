@@ -18,7 +18,7 @@ export function CounterNumber({ value, prefix = '', suffix = '', duration = 2, c
   useEffect(() => {
     if (!ref.current) return
     const obj = { val: prev.current }
-    gsap.to(obj, {
+    const tween = gsap.to(obj, {
       val: value,
       duration,
       ease: 'power2.out',
@@ -29,6 +29,7 @@ export function CounterNumber({ value, prefix = '', suffix = '', duration = 2, c
       },
     })
     prev.current = value
+    return () => { tween.kill() }
   }, [value, duration, prefix, suffix])
 
   return (
