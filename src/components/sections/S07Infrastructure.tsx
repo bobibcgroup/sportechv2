@@ -101,7 +101,7 @@ export function S07Infrastructure() {
                   initial={{ scale: 0, opacity: 0 }}
                   animate={inView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
                   transition={{ delay: 0.3 + i * 0.1, type: 'spring', stiffness: 260 }}
-                  style={{ transformOrigin: `${node.x}px ${node.y}px` }}
+                  style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
                 >
                   <circle
                     cx={node.x}
