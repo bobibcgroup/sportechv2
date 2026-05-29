@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useMemo } from 'react'
+import { useRef, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
@@ -24,6 +24,18 @@ export function StadiumScene({ fanCount = 2000 }: { fanCount?: number }) {
     return pts
   }, [fanCount])
 
+  // Colors are static — set once on mount, never again
+  useEffect(() => {
+    if (!meshRef.current) return
+    positions.forEach((_, i) => {
+      const colorIdx = i % 3 === 0 ? 2 : i % 3 === 1 ? 1 : 0
+      meshRef.current!.setColorAt(i, FAN_COLORS[colorIdx])
+    })
+    if (meshRef.current.instanceColor) {
+      meshRef.current.instanceColor.needsUpdate = true
+    }
+  }, [positions])
+
   useFrame(({ clock }) => {
     if (!meshRef.current) return
     positions.forEach(([x, , z], i) => {
@@ -31,11 +43,8 @@ export function StadiumScene({ fanCount = 2000 }: { fanCount?: number }) {
       dummy.position.y = Math.sin(clock.getElapsedTime() * 2 + i * 0.1) * 0.05
       dummy.updateMatrix()
       meshRef.current!.setMatrixAt(i, dummy.matrix)
-      const colorIdx = i % 3 === 0 ? 2 : i % 3 === 1 ? 1 : 0
-      meshRef.current!.setColorAt(i, FAN_COLORS[colorIdx])
     })
     meshRef.current.instanceMatrix.needsUpdate = true
-    if (meshRef.current.instanceColor) meshRef.current.instanceColor.needsUpdate = true
   })
 
   return (
