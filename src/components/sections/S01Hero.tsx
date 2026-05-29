@@ -6,8 +6,6 @@ import { gsap } from 'gsap'
 import { motion } from 'framer-motion'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
-gsap.registerPlugin()
-
 const STAT_CARDS = [
   { label: 'Annual Revenue', value: '$2.4M', change: '+34%' },
   { label: 'Active Fans', value: '84K', change: '+12%' },
