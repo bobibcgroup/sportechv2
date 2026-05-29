@@ -42,7 +42,7 @@ export function S06Simulator() {
   const streamEntries = Object.keys(STREAM_DISPLAY)
 
   return (
-    <section className="relative min-h-screen bg-base flex items-center py-32">
+    <section id="s06-simulator" className="relative min-h-screen bg-base flex items-center py-32">
       <div className="max-w-5xl mx-auto px-6 lg:px-12 w-full">
         <p className="text-yellow text-xs font-bold tracking-widest uppercase mb-4">
           Revenue Simulator

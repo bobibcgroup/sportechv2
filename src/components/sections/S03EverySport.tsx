@@ -30,7 +30,7 @@ export function S03EverySport() {
   const inView = useInView(ref, { once: true, margin: '-15% 0px' })
 
   return (
-    <section ref={ref} className="relative min-h-screen bg-section-alt flex items-center py-32">
+    <section ref={ref} id="s03-every-sport" className="relative min-h-screen bg-section-alt flex items-center py-32">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>

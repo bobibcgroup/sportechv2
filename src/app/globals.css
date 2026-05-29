@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-:root {
-  --font-inter: 'Inter', system-ui, sans-serif;
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -32,4 +28,10 @@ body {
 .split-line {
   overflow: hidden;
   display: block;
+}
+
+/* CSS fallback: ensure text is visible if GSAP animation never fires */
+.reveal-line {
+  opacity: 1;
+  transform: translateY(0);
 }

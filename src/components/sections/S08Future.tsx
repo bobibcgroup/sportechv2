@@ -54,7 +54,7 @@ export function S08Future() {
   }, [canvasInView])
 
   return (
-    <section ref={ref} className="relative min-h-screen bg-base flex items-center py-32 overflow-hidden">
+    <section ref={ref} id="s08-future" className="relative min-h-screen bg-base flex items-center py-32 overflow-hidden">
       {/* Ambient R3F particle canvas — desktop only, deferred until in view */}
       {!isMobile && shouldMountCanvas && (
         <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">

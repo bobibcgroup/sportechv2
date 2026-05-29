@@ -11,7 +11,7 @@ import { S09Globe } from '@/components/sections/S09Globe'
 
 export default function Page() {
   return (
-    <main className="bg-base">
+    <main className="bg-base overflow-x-hidden">
       <HeroCanvasLoader />
       <S01Hero />
       <S02LostEconomy />

@@ -22,10 +22,7 @@ export function GlowButton({ children, variant = 'primary', onClick, href }: Glo
     className: styles[variant],
     whileHover: { scale: 1.03 },
     whileTap: { scale: 0.97 },
-    initial: { scale: 0.9, opacity: 0 },
-    whileInView: { scale: 1, opacity: 1 },
     transition: { type: 'spring' as const, stiffness: 300, damping: 20 },
-    viewport: { once: true },
   }
 
   if (href) {

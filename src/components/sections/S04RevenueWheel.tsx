@@ -40,7 +40,7 @@ export function S04RevenueWheel() {
   }, { dependencies: [inView], scope: sectionRef })
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen bg-base flex items-center py-32">
+    <section ref={sectionRef} id="s04-revenue-wheel" className="relative min-h-screen bg-base flex items-center py-32">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left: headline + feature list */}
@@ -77,7 +77,7 @@ export function S04RevenueWheel() {
               {/* Center logo */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-20 h-20 rounded-full bg-yellow flex items-center justify-center glow-yellow">
-                  <span className="text-base font-black text-[9px] tracking-widest leading-tight text-center">
+                  <span className="font-black text-[9px] tracking-widest leading-tight text-center">
                     SPORT<br />TECH
                   </span>
                 </div>
@@ -86,7 +86,7 @@ export function S04RevenueWheel() {
               {/* Stream labels at spoke positions */}
               {STREAMS.map((stream) => {
                 const rad = (stream.angle * Math.PI) / 180
-                const r = 42  // % radius from center
+                const r = 38  // reduced from 42 to prevent overflow
                 const x = 50 + Math.cos(rad) * r
                 const y = 50 + Math.sin(rad) * r
                 return (

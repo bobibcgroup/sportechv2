@@ -24,8 +24,8 @@ export function GlobeCanvas({ inView = false }: GlobeCanvasProps) {
   return (
     <Canvas
       camera={{ position: [0, 0, 3] }}
-      style={{ width: '100%', height: '100%', background: '#080b14' }}
-      gl={{ antialias: true }}
+      style={{ width: '100%', height: '100%' }}
+      gl={{ antialias: true, alpha: true }}
       dpr={[1, 2]}
       frameloop={inView ? 'always' : 'demand'}
     >

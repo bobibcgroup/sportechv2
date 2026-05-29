@@ -9,7 +9,7 @@ const HeroCanvas = dynamic(
 )
 
 export function HeroCanvasLoader() {
-  const [shouldMount, setShouldMount] = useState(false)
+  const [shouldMount, setShouldMount] = useState(true)
   const [inView, setInView] = useState(true)
 
   useEffect(() => {

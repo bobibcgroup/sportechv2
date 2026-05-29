@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
   experimental: {
     optimizePackageImports: [
       '@react-three/fiber',
@@ -22,10 +23,12 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline'",
+              "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
-              "font-src 'self' https:",
+              "font-src 'self' https: data:",
+              "connect-src 'self'",
+              "worker-src blob:",
               "frame-ancestors 'none'",
             ].join('; '),
           },

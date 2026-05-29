@@ -34,7 +34,7 @@ export function CounterNumber({ value, prefix = '', suffix = '', duration = 2, c
 
   return (
     <span ref={ref} className={className}>
-      {prefix}{value.toLocaleString()}{suffix}
+      {prefix}0{suffix}
     </span>
   )
 }

@@ -29,7 +29,7 @@ export function S05AppMockup() {
   const swatch = COLOR_SWATCHES[activeColor]
 
   return (
-    <section ref={ref} className="relative min-h-screen bg-section-alt flex items-center py-32">
+    <section ref={ref} id="s05-app-mockup" className="relative min-h-screen bg-section-alt flex items-center py-32">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left: controls */}
@@ -81,7 +81,7 @@ export function S05AppMockup() {
               }}
             >
               <motion.div
-                className="w-56 h-[480px] rounded-3xl border-2 border-white/20 shadow-2xl overflow-hidden"
+                className="w-56 h-[480px] max-w-full rounded-3xl border-2 border-white/20 shadow-2xl overflow-hidden"
                 animate={{ backgroundColor: swatch.bg }}
                 transition={{ duration: 0.35 }}
               >

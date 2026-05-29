@@ -44,7 +44,7 @@ export function S02LostEconomy() {
                 {inView ? (
                   <CounterNumber value={1_050_000_000} prefix="$" suffix="+" duration={2.5} />
                 ) : (
-                  <span>$0</span>
+                  <span className="opacity-0">$1,050,000,000+</span>
                 )}
               </div>
             </div>

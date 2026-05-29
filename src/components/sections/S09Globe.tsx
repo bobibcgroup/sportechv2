@@ -23,7 +23,7 @@ export function S09Globe() {
   }), [reduced, inView])
 
   return (
-    <section ref={ref} className="relative min-h-screen bg-base flex items-center py-32">
+    <section ref={ref} id="s09-globe" className="relative min-h-screen bg-base flex items-center py-32">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left: text content */}
@@ -51,7 +51,7 @@ export function S09Globe() {
             </motion.p>
 
             <motion.div {...fadeUp(0.4)}>
-              <GlowButton href="#">Start Your Journey</GlowButton>
+              <GlowButton href="#s01-hero">Start Your Journey</GlowButton>
             </motion.div>
           </div>
 
@@ -61,7 +61,7 @@ export function S09Globe() {
               <GlobeCanvasLoader inView={canvasInView} />
 
               {isMobile && (
-                <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+                <div className="absolute inset-0 flex items-center justify-center">
                   <div
                     role="img"
                     aria-label="A globe representing Sportech's worldwide reach"

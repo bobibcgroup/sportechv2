@@ -30,7 +30,7 @@ export function S07Infrastructure() {
   const inView = useInView(ref, { once: true, margin: '-15% 0px' })
 
   return (
-    <section ref={ref} className="relative min-h-screen bg-section-alt flex items-center py-32">
+    <section ref={ref} id="s07-infrastructure" className="relative min-h-screen bg-section-alt flex items-center py-32">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left: features */}
@@ -72,7 +72,7 @@ export function S07Infrastructure() {
           {/* Right: SVG node diagram */}
           <div className="relative w-full aspect-square max-w-sm mx-auto">
             <svg
-              viewBox="0 0 100 100"
+              viewBox="-5 -5 110 110"
               className="w-full h-full"
               aria-label="Sportech infrastructure diagram"
               role="img"
