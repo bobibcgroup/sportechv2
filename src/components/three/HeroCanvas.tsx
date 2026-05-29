@@ -55,7 +55,7 @@ export function HeroCanvas({ inView = true }: HeroCanvasProps) {
       <pointLight position={[0, 10, 0]} color="#facc15" intensity={2} />
       <Stars radius={80} depth={30} count={4000} factor={3} saturation={0} fade />
       <ParticleField count={2500} />
-      <StadiumScene fanCount={1500} />
+      <StadiumScene fanCount={800} />
       <SceneController />
     </Canvas>
   )

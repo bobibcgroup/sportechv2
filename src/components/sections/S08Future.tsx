@@ -6,19 +6,19 @@ import { motion, useInView } from 'framer-motion'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
-// Dynamically import the entire canvas wrapper (ssr: false) to avoid Three.js SSR errors
 const AmbientCanvas = dynamic(
   () =>
     import('@/components/three/AmbientParticles').then(({ AmbientParticles }) => {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { Canvas } = require('@react-three/fiber') as typeof import('@react-three/fiber')
 
-      function AmbientCanvasInner() {
+      function AmbientCanvasInner({ inView = false }: { inView?: boolean }) {
         return (
           <Canvas
             camera={{ position: [0, 0, 5], fov: 60 }}
             style={{ width: '100%', height: '100%' }}
             gl={{ alpha: true, antialias: false }}
+            frameloop={inView ? 'always' : 'demand'}
           >
             <AmbientParticles />
           </Canvas>
@@ -41,21 +41,24 @@ const FEATURES = [
 
 export function S08Future() {
   const ref = useRef<HTMLElement>(null)
+  // once: true — for text entry animations only
   const inView = useInView(ref, { once: true, margin: '-15% 0px' })
+  // once: false — accurately tracks visibility for canvas frameloop
+  const canvasInView = useInView(ref, { once: false, margin: '0px' })
   const isMobile = useIsMobile()
   const reduced = useReducedMotion()
   const [shouldMountCanvas, setShouldMountCanvas] = useState(false)
 
   useEffect(() => {
-    if (inView) setShouldMountCanvas(true)
-  }, [inView])
+    if (canvasInView) setShouldMountCanvas(true)
+  }, [canvasInView])
 
   return (
     <section ref={ref} className="relative min-h-screen bg-base flex items-center py-32 overflow-hidden">
-      {/* Ambient R3F particle canvas — desktop only */}
+      {/* Ambient R3F particle canvas — desktop only, deferred until in view */}
       {!isMobile && shouldMountCanvas && (
         <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
-          <AmbientCanvas />
+          <AmbientCanvas inView={canvasInView} />
         </div>
       )}
 

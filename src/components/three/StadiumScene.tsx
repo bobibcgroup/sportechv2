@@ -12,6 +12,7 @@ const FAN_COLORS = [
 
 export function StadiumScene({ fanCount = 2000 }: { fanCount?: number }) {
   const meshRef = useRef<THREE.InstancedMesh>(null)
+  const frameCount = useRef(0)
   const dummy = useMemo(() => new THREE.Object3D(), [])
 
   const positions = useMemo(() => {
@@ -38,6 +39,8 @@ export function StadiumScene({ fanCount = 2000 }: { fanCount?: number }) {
 
   useFrame(({ clock }) => {
     if (!meshRef.current) return
+    frameCount.current++
+    if (frameCount.current % 2 !== 0) return
     positions.forEach(([x, , z], i) => {
       dummy.position.set(x, 0, z)
       dummy.position.y = Math.sin(clock.getElapsedTime() * 2 + i * 0.1) * 0.05

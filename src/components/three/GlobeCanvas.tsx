@@ -1,6 +1,7 @@
 'use client'
 
-import { Canvas } from '@react-three/fiber'
+import { useEffect } from 'react'
+import { Canvas, useThree } from '@react-three/fiber'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { GlobeScene } from './GlobeScene'
 
@@ -8,7 +9,15 @@ interface GlobeCanvasProps {
   inView?: boolean
 }
 
-export function GlobeCanvas({ inView = true }: GlobeCanvasProps) {
+function FrameloopInvalidate({ inView }: { inView: boolean }) {
+  const { invalidate } = useThree()
+  useEffect(() => {
+    if (!inView) invalidate()
+  }, [inView, invalidate])
+  return null
+}
+
+export function GlobeCanvas({ inView = false }: GlobeCanvasProps) {
   const isMobile = useIsMobile()
   if (isMobile) return null
 
@@ -20,6 +29,7 @@ export function GlobeCanvas({ inView = true }: GlobeCanvasProps) {
       dpr={[1, 2]}
       frameloop={inView ? 'always' : 'demand'}
     >
+      <FrameloopInvalidate inView={inView ?? false} />
       <GlobeScene />
     </Canvas>
   )

@@ -54,3 +54,20 @@ next-env.d.ts
 
 # OS
 Thumbs.db
+
+# Private keys & certificates
+*.key
+*.crt
+*.cert
+*.p12
+*.pfx
+
+# Service account credentials
+serviceAccountKey.json
+*-adminsdk-*.json
+google-credentials.json
+credentials.json
+secrets.json
+
+# npm auth tokens
+.npmrc

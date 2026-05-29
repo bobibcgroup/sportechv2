@@ -9,6 +9,7 @@ const HeroCanvas = dynamic(
 )
 
 export function HeroCanvasLoader() {
+  const [shouldMount, setShouldMount] = useState(false)
   const [inView, setInView] = useState(true)
 
   useEffect(() => {
@@ -23,7 +24,9 @@ export function HeroCanvasLoader() {
           if (entry.isIntersecting) visibleSet.add(entry.target)
           else visibleSet.delete(entry.target)
         })
-        setInView(visibleSet.size > 0)
+        const visible = visibleSet.size > 0
+        setInView(visible)
+        if (visible) setShouldMount(true)
       },
       { threshold: 0 }
     )
@@ -32,5 +35,6 @@ export function HeroCanvasLoader() {
     return () => observer.disconnect()
   }, [])
 
+  if (!shouldMount) return null
   return <HeroCanvas inView={inView} />
 }
