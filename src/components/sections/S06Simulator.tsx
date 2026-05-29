@@ -32,14 +32,18 @@ const STREAM_COLORS: Record<string, string> = {
   digitalGiftCards: '#fb923c',
   liveStreamGifting: '#c084fc',
   interactiveVoting: '#38bdf8',
-  merchandise: '#facc15',
+  merchandise: '#a78bfa',
   nftCollectibles: '#f87171',
 }
 
+const MAX_IDX = FAN_TIERS.length - 1
+
 export function S06Simulator() {
-  const [selectedTier, setSelectedTier] = useState<FanTier>(100_000)
+  const [tierIdx, setTierIdx] = useState<number>(2) // default 100K
+  const selectedTier = FAN_TIERS[tierIdx] as FanTier
   const result = computeRevenue(selectedTier)
   const streamEntries = Object.keys(STREAM_DISPLAY)
+  const fillPct = (tierIdx / MAX_IDX) * 100
 
   return (
     <section id="s06-simulator" className="relative min-h-screen bg-base flex items-center py-32">
@@ -51,26 +55,73 @@ export function S06Simulator() {
           See your club&apos;s potential.
         </h2>
         <p className="text-slate-400 mb-10">
-          Select your total fanbase size. Only 25% is counted as active users.
+          Drag the slider to set your fanbase size. Only 25% is counted as active users.
         </p>
 
-        {/* Tier selector */}
-        <div className="flex gap-2 flex-wrap mb-10">
-          {FAN_TIERS.map((tier) => (
-            <button
-              key={tier}
-              type="button"
-              onClick={() => setSelectedTier(tier)}
-              aria-pressed={selectedTier === tier}
-              className={`px-5 py-2.5 rounded-lg text-sm font-semibold border transition-all duration-200 cursor-pointer ${
-                selectedTier === tier
-                  ? 'bg-yellow text-base border-yellow'
-                  : 'bg-white/5 text-slate-400 border-white/10 hover:border-white/30'
-              }`}
-            >
-              {TIER_LABELS[tier]}
-            </button>
-          ))}
+        {/* Slider */}
+        <div className="mb-10">
+          <div className="flex justify-between text-xs text-slate-500 mb-3 px-1">
+            <span>10K fans</span>
+            <span>2M+ fans</span>
+          </div>
+
+          <div className="relative py-2">
+            <input
+              type="range"
+              min={0}
+              max={MAX_IDX}
+              step={1}
+              value={tierIdx}
+              onChange={(e) => setTierIdx(parseInt(e.target.value, 10))}
+              aria-label="Select fanbase size"
+              className="
+                w-full h-2 rounded-full appearance-none cursor-pointer outline-none
+                [&::-webkit-slider-thumb]:appearance-none
+                [&::-webkit-slider-thumb]:w-5
+                [&::-webkit-slider-thumb]:h-5
+                [&::-webkit-slider-thumb]:rounded-full
+                [&::-webkit-slider-thumb]:bg-yellow
+                [&::-webkit-slider-thumb]:border-2
+                [&::-webkit-slider-thumb]:border-[#080b14]
+                [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(250,204,21,0.6)]
+                [&::-webkit-slider-thumb]:cursor-grab
+                [&::-webkit-slider-thumb]:transition-transform
+                [&::-webkit-slider-thumb:active]:cursor-grabbing
+                [&::-webkit-slider-thumb:active]:scale-110
+                [&::-moz-range-thumb]:w-5
+                [&::-moz-range-thumb]:h-5
+                [&::-moz-range-thumb]:rounded-full
+                [&::-moz-range-thumb]:bg-yellow
+                [&::-moz-range-thumb]:border-2
+                [&::-moz-range-thumb]:border-[#080b14]
+                [&::-moz-range-thumb]:cursor-grab
+              "
+              style={{
+                background: `linear-gradient(to right, #facc15 ${fillPct}%, rgba(255,255,255,0.08) ${fillPct}%)`,
+              }}
+            />
+          </div>
+
+          <div className="flex justify-between mt-3 px-0.5">
+            {FAN_TIERS.map((tier, i) => (
+              <button
+                key={tier}
+                type="button"
+                onClick={() => setTierIdx(i)}
+                className={`text-[10px] font-medium transition-colors duration-150 cursor-pointer ${
+                  i === tierIdx ? 'text-yellow' : 'text-slate-600 hover:text-slate-400'
+                }`}
+                aria-label={`Select ${TIER_LABELS[tier]} fans`}
+              >
+                {TIER_LABELS[tier]}
+              </button>
+            ))}
+          </div>
+
+          <div className="text-center mt-4">
+            <span className="text-3xl font-black text-white">{TIER_LABELS[selectedTier]}</span>
+            <span className="text-slate-400 ml-2 text-sm">fans selected</span>
+          </div>
         </div>
 
         {/* Revenue display */}

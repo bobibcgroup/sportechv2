@@ -1,9 +1,10 @@
 'use client'
 
-import { useRef } from 'react'
+import { useId, useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 const STREAMS = [
   { label: 'Player Tokens', angle: 0 },
@@ -25,19 +26,37 @@ const FEATURES = [
   'API Access',
 ]
 
+const CX = 144
+const CY = 144
+const OUTER_R = 128
+const INNER_R = 52
+const SPOKE_END = 122
+const SPOKE_START = 56
+
 export function S04RevenueWheel() {
+  const uid = useId()
   const sectionRef = useRef<HTMLElement>(null)
   const wheelRef = useRef<HTMLDivElement>(null)
+  const reduced = useReducedMotion()
   const inView = useInView(sectionRef, { once: true, margin: '-20% 0px' })
 
   useGSAP(() => {
-    if (!inView || !wheelRef.current) return
+    if (reduced || !inView || !wheelRef.current) return
+    const el = wheelRef.current
     gsap.fromTo(
-      wheelRef.current,
+      el,
       { rotation: -180, opacity: 0, scale: 0.7 },
-      { rotation: 0, opacity: 1, scale: 1, duration: 1.4, ease: 'power3.out' }
+      {
+        rotation: 0, opacity: 1, scale: 1,
+        duration: 1.4, ease: 'power3.out',
+        onStart: () => { el.style.willChange = 'transform, opacity' },
+        onComplete: () => { el.style.willChange = 'auto' },
+      }
     )
-  }, { dependencies: [inView], scope: sectionRef })
+  }, { dependencies: [inView, reduced], scope: sectionRef })
+
+  const outerCircumference = 2 * Math.PI * OUTER_R
+  const ringGradId = `${uid}ring`
 
   return (
     <section ref={sectionRef} id="s04-revenue-wheel" className="relative min-h-screen bg-base flex items-center py-32">
@@ -70,23 +89,98 @@ export function S04RevenueWheel() {
 
           {/* Right: wheel diagram */}
           <div className="flex items-center justify-center">
-            <div ref={wheelRef} className="relative w-72 h-72" style={{ opacity: 0, willChange: 'transform, opacity' }}>
-              <div className="absolute inset-0 rounded-full border-2 border-yellow/20" />
-              <div className="absolute inset-4 rounded-full border border-white/10" />
+            <div
+              ref={wheelRef}
+              className="relative w-72 h-72"
+              style={{ opacity: 0 }}
+            >
+              <svg
+                viewBox="0 0 288 288"
+                className="absolute inset-0 w-full h-full"
+                aria-hidden="true"
+              >
+                <defs>
+                  <linearGradient id={ringGradId} x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#facc15" stopOpacity="0.7" />
+                    <stop offset="50%" stopColor="#f59e0b" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="#facc15" stopOpacity="0.7" />
+                  </linearGradient>
+                </defs>
+
+                {/* Outer ring track */}
+                <circle cx={CX} cy={CY} r={OUTER_R} fill="none" stroke="#facc15" strokeOpacity="0.08" strokeWidth="1" />
+
+                {/* Outer ring — animated reveal; delayed past GSAP tween (1.4s) */}
+                <motion.circle
+                  cx={CX} cy={CY} r={OUTER_R}
+                  fill="none"
+                  stroke={`url(#${ringGradId})`}
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeDasharray={outerCircumference}
+                  initial={{ strokeDashoffset: outerCircumference }}
+                  animate={inView ? { strokeDashoffset: 0 } : {}}
+                  transition={{ duration: 2, ease: 'linear', delay: 1.5 }}
+                />
+
+                {/* Inner ring */}
+                <circle cx={CX} cy={CY} r={INNER_R + 8} fill="none" stroke="#ffffff" strokeOpacity="0.05" strokeWidth="1" />
+
+                {/* Spokes — delayed past GSAP tween */}
+                {STREAMS.map((stream, i) => {
+                  const rad = (stream.angle * Math.PI) / 180
+                  const x1 = CX + Math.cos(rad) * SPOKE_START
+                  const y1 = CY + Math.sin(rad) * SPOKE_START
+                  const x2 = CX + Math.cos(rad) * SPOKE_END
+                  const y2 = CY + Math.sin(rad) * SPOKE_END
+                  const spokeLen = SPOKE_END - SPOKE_START
+                  return (
+                    <motion.line
+                      key={`spoke-${stream.angle}`}
+                      x1={x1} y1={y1} x2={x2} y2={y2}
+                      stroke="#facc15"
+                      strokeOpacity="0.18"
+                      strokeWidth="1"
+                      strokeDasharray={spokeLen}
+                      initial={{ strokeDashoffset: spokeLen }}
+                      animate={inView ? { strokeDashoffset: 0 } : {}}
+                      transition={{ delay: 1.5 + i * 0.1, duration: 0.6 }}
+                    />
+                  )
+                })}
+
+                {/* Spoke endpoint dots — delayed past GSAP tween */}
+                {STREAMS.map((stream, i) => {
+                  const rad = (stream.angle * Math.PI) / 180
+                  const x = CX + Math.cos(rad) * SPOKE_END
+                  const y = CY + Math.sin(rad) * SPOKE_END
+                  return (
+                    <motion.circle
+                      key={`dot-${stream.angle}`}
+                      cx={x} cy={y} r={3}
+                      fill="#facc15"
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={inView ? { scale: 1, opacity: 0.7 } : {}}
+                      transition={{ delay: 1.6 + i * 0.1, type: 'spring', stiffness: 220 }}
+                      style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+                    />
+                  )
+                })}
+              </svg>
 
               {/* Center logo */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-20 h-20 rounded-full bg-yellow flex items-center justify-center glow-yellow">
-                  <span className="font-black text-[9px] tracking-widest leading-tight text-center">
+                  <span className="font-black text-[9px] tracking-widest leading-tight text-center text-base">
                     SPORT<br />TECH
                   </span>
                 </div>
               </div>
 
-              {/* Stream labels at spoke positions */}
+              {/* Stream labels */}
               {STREAMS.map((stream) => {
                 const rad = (stream.angle * Math.PI) / 180
-                const r = 38  // reduced from 42 to prevent overflow
+                const r = 38
                 const x = 50 + Math.cos(rad) * r
                 const y = 50 + Math.sin(rad) * r
                 return (

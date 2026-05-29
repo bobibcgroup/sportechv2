@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useId, useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 
 const FEATURES = [
@@ -26,15 +26,20 @@ const EDGES: [number, number][] = [
 ]
 
 export function S07Infrastructure() {
+  const uid = useId()
   const ref = useRef<HTMLElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-15% 0px' })
+  const textRef = useRef<HTMLDivElement>(null)
+  // once: true — text stagger plays once and stays visible
+  const textInView = useInView(textRef, { once: true, margin: '-15% 0px' })
+  // once: false — accurately tracks visibility so pulse beams pause on scroll-out
+  const inView = useInView(ref, { once: false, margin: '-10% 0px' })
 
   return (
     <section ref={ref} id="s07-infrastructure" className="relative min-h-screen bg-section-alt flex items-center py-32">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left: features */}
-          <div>
+          <div ref={textRef}>
             <p className="text-yellow text-xs font-bold tracking-widest uppercase mb-4">
               Powered by Enterprise Infrastructure
             </p>
@@ -48,7 +53,7 @@ export function S07Infrastructure() {
                   key={f}
                   className="flex items-center gap-3 text-slate-300"
                   initial={{ opacity: 0, x: -20 }}
-                  animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                  animate={textInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
                   transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
                 >
                   <svg
@@ -69,7 +74,7 @@ export function S07Infrastructure() {
             </ul>
           </div>
 
-          {/* Right: SVG node diagram */}
+          {/* Right: pulse beam diagram */}
           <div className="relative w-full aspect-square max-w-sm mx-auto">
             <svg
               viewBox="-5 -5 110 110"
@@ -77,22 +82,68 @@ export function S07Infrastructure() {
               aria-label="Sportech infrastructure diagram"
               role="img"
             >
-              {/* Edges */}
-              {EDGES.map(([a, b], i) => (
+              <defs>
+                {EDGES.map(([a, b], i) => (
+                  <linearGradient
+                    key={`grad-${a}-${b}`}
+                    id={`${uid}beam${i}`}
+                    x1={`${NODES[a].x}%`}
+                    y1={`${NODES[a].y}%`}
+                    x2={`${NODES[b].x}%`}
+                    y2={`${NODES[b].y}%`}
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop offset="0%" stopColor="#facc15" stopOpacity="0" />
+                    <stop offset="50%" stopColor="#facc15" stopOpacity="0.9" />
+                    <stop offset="100%" stopColor="#c084fc" stopOpacity="0" />
+                  </linearGradient>
+                ))}
+              </defs>
+
+              {/* Static base edges */}
+              {EDGES.map(([a, b]) => (
                 <motion.line
-                  key={`edge-${a}-${b}`}
+                  key={`base-${a}-${b}`}
                   x1={NODES[a].x}
                   y1={NODES[a].y}
                   x2={NODES[b].x}
                   y2={NODES[b].y}
-                  stroke="#facc1533"
+                  stroke="#facc15"
+                  strokeOpacity="0.08"
                   strokeWidth="0.5"
-                  strokeLinecap="round"
                   initial={{ opacity: 0 }}
                   animate={inView ? { opacity: 1 } : { opacity: 0 }}
-                  transition={{ delay: 0.5 + i * 0.15, duration: 0.6 }}
+                  transition={{ delay: 0.4, duration: 0.6 }}
                 />
               ))}
+
+              {/* Animated pulse beams — only mounted when section is in view */}
+              {inView && EDGES.map(([a, b], i) => {
+                const dx = NODES[b].x - NODES[a].x
+                const dy = NODES[b].y - NODES[a].y
+                const len = Math.sqrt(dx * dx + dy * dy)
+                const dashLen = len * 0.25
+                return (
+                  <motion.line
+                    key={`pulse-${a}-${b}`}
+                    x1={NODES[a].x}
+                    y1={NODES[a].y}
+                    x2={NODES[b].x}
+                    y2={NODES[b].y}
+                    stroke={`url(#${uid}beam${i})`}
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeDasharray={`${dashLen} ${len}`}
+                    animate={{ strokeDashoffset: [len + dashLen, -(len + dashLen)] }}
+                    transition={{
+                      duration: 1.8 + i * 0.25,
+                      repeat: Infinity,
+                      ease: 'linear',
+                      delay: i * 0.35,
+                    }}
+                  />
+                )
+              })}
 
               {/* Nodes */}
               {NODES.map((node, i) => (
@@ -103,6 +154,17 @@ export function S07Infrastructure() {
                   transition={{ delay: 0.3 + i * 0.1, type: 'spring', stiffness: 260 }}
                   style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
                 >
+                  {node.isCenter && (
+                    <circle
+                      cx={node.x}
+                      cy={node.y}
+                      r={11}
+                      fill="none"
+                      stroke="#facc15"
+                      strokeOpacity="0.25"
+                      strokeWidth="1.5"
+                    />
+                  )}
                   <circle
                     cx={node.x}
                     cy={node.y}

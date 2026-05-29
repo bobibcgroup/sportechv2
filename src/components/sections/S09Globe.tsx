@@ -1,20 +1,23 @@
 'use client'
 
-import { useRef, useCallback } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { GlowButton } from '@/components/ui/GlowButton'
-import { GlobeCanvasLoader } from '@/components/three/GlobeCanvasLoader'
+import { CobeGlobe } from '@/components/ui/CobeGlobe'
 
 export function S09Globe() {
   const ref = useRef<HTMLElement>(null)
-  // once: true — for text entry animations (triggers once, stays visible)
   const inView = useInView(ref, { once: true, margin: '-10% 0px' })
-  // once: false — for canvas frameloop and deferred mount (accurately tracks visibility)
   const canvasInView = useInView(ref, { once: false, margin: '0px' })
   const isMobile = useIsMobile()
   const reduced = useReducedMotion()
+  const [shouldMount, setShouldMount] = useState(false)
+
+  useEffect(() => {
+    if (canvasInView) setShouldMount(true)
+  }, [canvasInView])
 
   const fadeUp = useCallback((delay: number) => ({
     initial: reduced ? false : { opacity: 0, y: 30 },
@@ -55,21 +58,21 @@ export function S09Globe() {
             </motion.div>
           </div>
 
-          {/* Right: globe canvas */}
+          {/* Right: COBE WebGL globe */}
           <div className="flex justify-center lg:justify-end">
             <div className="aspect-square w-full max-w-md mx-auto relative">
-              <GlobeCanvasLoader inView={canvasInView} />
-
-              {isMobile && (
+              {isMobile ? (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div
                     role="img"
                     aria-label="A globe representing Sportech's worldwide reach"
-                    className="w-32 h-32 rounded-full bg-yellow/20 border-2 border-yellow/40 flex items-center justify-center text-yellow text-sm font-bold"
+                    className="w-48 h-48 rounded-full bg-yellow/10 border border-yellow/30 flex items-center justify-center text-yellow text-sm font-bold"
                   >
                     GLOBAL
                   </div>
                 </div>
+              ) : (
+                shouldMount && <CobeGlobe inView={canvasInView} />
               )}
             </div>
           </div>

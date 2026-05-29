@@ -31,8 +31,28 @@ export function S01Hero() {
     <section
       id="s01-hero"
       ref={containerRef}
-      className="relative min-h-screen flex items-center bg-base"
+      className="relative min-h-screen flex items-center bg-base overflow-hidden"
     >
+      {/* Lamp glow — conic spotlight from top center */}
+      <div
+        className="absolute top-0 inset-x-0 pointer-events-none"
+        aria-hidden="true"
+        style={{
+          height: '65vh',
+          background: 'radial-gradient(75% 60% at 50% 0%, rgba(250,204,21,0.10) 0%, rgba(250,204,21,0.04) 45%, transparent 100%)',
+        }}
+      />
+      {/* Subtle cone lines */}
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none"
+        aria-hidden="true"
+        style={{
+          width: '1px',
+          height: '45vh',
+          background: 'linear-gradient(to bottom, rgba(250,204,21,0.25), transparent)',
+        }}
+      />
+
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 w-full py-32">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left */}
@@ -66,7 +86,7 @@ export function S01Hero() {
                 key={card.label}
                 className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 flex items-center justify-between"
                 initial={reduced ? false : { opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
+                animate={reduced ? {} : { opacity: 1, x: 0 }}
                 transition={{ delay: 0.6 + i * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               >
                 <span className="text-slate-400 text-sm">{card.label}</span>

@@ -1,34 +1,12 @@
 'use client'
 
-import dynamic from 'next/dynamic'
 import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { SpaceBackground } from '@/components/ui/SpaceBackground'
 
-const AmbientCanvas = dynamic(
-  () =>
-    import('@/components/three/AmbientParticles').then(({ AmbientParticles }) => {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { Canvas } = require('@react-three/fiber') as typeof import('@react-three/fiber')
-
-      function AmbientCanvasInner({ inView = false }: { inView?: boolean }) {
-        return (
-          <Canvas
-            camera={{ position: [0, 0, 5], fov: 60 }}
-            style={{ width: '100%', height: '100%' }}
-            gl={{ alpha: true, antialias: false }}
-            frameloop={inView ? 'always' : 'demand'}
-          >
-            <AmbientParticles />
-          </Canvas>
-        )
-      }
-
-      return { default: AmbientCanvasInner }
-    }),
-  { ssr: false }
-)
+const PARTICLE_COUNT = 250
 
 const FEATURES = [
   'Live Streaming',
@@ -41,9 +19,7 @@ const FEATURES = [
 
 export function S08Future() {
   const ref = useRef<HTMLElement>(null)
-  // once: true — for text entry animations only
   const inView = useInView(ref, { once: true, margin: '-15% 0px' })
-  // once: false — accurately tracks visibility for canvas frameloop
   const canvasInView = useInView(ref, { once: false, margin: '0px' })
   const isMobile = useIsMobile()
   const reduced = useReducedMotion()
@@ -55,11 +31,9 @@ export function S08Future() {
 
   return (
     <section ref={ref} id="s08-future" className="relative min-h-screen bg-base flex items-center py-32 overflow-hidden">
-      {/* Ambient R3F particle canvas — desktop only, deferred until in view */}
-      {!isMobile && shouldMountCanvas && (
-        <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
-          <AmbientCanvas inView={canvasInView} />
-        </div>
+      {/* Space particle canvas — desktop only, deferred until in view */}
+      {!isMobile && !reduced && shouldMountCanvas && (
+        <SpaceBackground inView={canvasInView} particleCount={PARTICLE_COUNT} />
       )}
 
       {/* Vignette */}
@@ -84,7 +58,7 @@ export function S08Future() {
           {FEATURES.map((f, i) => (
             <motion.div
               key={f}
-              className="border border-purple-glow/40 bg-purple-glow/5 rounded-full px-5 py-2.5 text-sm text-slate-300"
+              className="border border-purple-glow/40 bg-purple-glow/5 rounded-full px-5 py-2.5 text-sm text-slate-300 cursor-pointer hover:border-yellow/40 hover:text-white transition-colors duration-200"
               initial={reduced ? false : { opacity: 0, x: i % 2 === 0 ? -30 : 30 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.3 + i * 0.1, duration: 0.6 }}
