@@ -5,6 +5,8 @@ import * as THREE from 'three'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { CityPoints } from './CityPoints'
 
+const STARS_PROPS = { radius: 100, depth: 50, count: 3000, factor: 4, saturation: 0, fade: true } as const
+
 export function GlobeScene() {
   const groupRef = useRef<THREE.Group>(null)
   const reduced = useReducedMotion()
@@ -19,12 +21,12 @@ export function GlobeScene() {
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 3, 5]} intensity={1.5} />
 
-      <Stars radius={100} depth={50} count={3000} factor={4} fade />
+      <Stars {...STARS_PROPS} />
 
       <group ref={groupRef}>
         {/* Earth sphere */}
         <mesh>
-          <sphereGeometry args={[1, 64, 64]} />
+          <sphereGeometry args={[1, 32, 32]} />
           <meshPhongMaterial
             color="#0a1f3d"
             emissive="#0a3060"
@@ -36,7 +38,7 @@ export function GlobeScene() {
 
         {/* Atmosphere sphere */}
         <mesh>
-          <sphereGeometry args={[1.02, 64, 64]} />
+          <sphereGeometry args={[1.02, 32, 32]} />
           <meshPhongMaterial
             color="#1a6aff"
             transparent

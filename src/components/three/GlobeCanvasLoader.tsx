@@ -7,6 +7,10 @@ const GlobeCanvas = dynamic(
   { ssr: false }
 )
 
-export function GlobeCanvasLoader() {
-  return <GlobeCanvas />
+interface GlobeCanvasLoaderProps {
+  inView?: boolean
+}
+
+export function GlobeCanvasLoader({ inView }: GlobeCanvasLoaderProps) {
+  return <GlobeCanvas inView={inView} />
 }

@@ -1,18 +1,11 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useCallback } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { GlowButton } from '@/components/ui/GlowButton'
 import { GlobeCanvasLoader } from '@/components/three/GlobeCanvasLoader'
-
-const TEXT_ITEMS = [
-  { type: 'label', content: 'Global Impact' },
-  { type: 'heading', content: null },
-  { type: 'body', content: 'Sportech connects clubs to fans across every timezone. Your platform. Your community. Everywhere.' },
-  { type: 'cta', content: null },
-]
 
 export function S09Globe() {
   const ref = useRef<HTMLElement>(null)
@@ -20,11 +13,11 @@ export function S09Globe() {
   const isMobile = useIsMobile()
   const reduced = useReducedMotion()
 
-  const fadeUp = (delay: number) => ({
+  const fadeUp = useCallback((delay: number) => ({
     initial: reduced ? false : { opacity: 0, y: 30 },
-    animate: inView ? { opacity: 1, y: 0 } : {},
+    animate: inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 },
     transition: { duration: 0.6, delay },
-  })
+  }), [reduced, inView])
 
   return (
     <section ref={ref} className="relative min-h-screen bg-base flex items-center py-32">
@@ -36,7 +29,7 @@ export function S09Globe() {
               className="text-yellow text-xs font-bold tracking-widest uppercase"
               {...fadeUp(0.1)}
             >
-              {TEXT_ITEMS[0].content}
+              Global Impact
             </motion.p>
 
             <motion.h2
@@ -51,7 +44,7 @@ export function S09Globe() {
               className="text-slate-400 text-lg max-w-lg"
               {...fadeUp(0.3)}
             >
-              {TEXT_ITEMS[2].content}
+              Sportech connects clubs to fans across every timezone. Your platform. Your community. Everywhere.
             </motion.p>
 
             <motion.div {...fadeUp(0.4)}>
@@ -62,12 +55,15 @@ export function S09Globe() {
           {/* Right: globe canvas */}
           <div className="flex justify-center lg:justify-end">
             <div className="aspect-square w-full max-w-md mx-auto relative">
-              <GlobeCanvasLoader />
+              <GlobeCanvasLoader inView={inView} />
 
-              {/* Mobile fallback — shown when canvas returns null */}
               {isMobile && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-32 h-32 rounded-full bg-yellow/20 border-2 border-yellow/40 flex items-center justify-center text-yellow text-sm font-bold">
+                <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+                  <div
+                    role="img"
+                    aria-label="A globe representing Sportech's worldwide reach"
+                    className="w-32 h-32 rounded-full bg-yellow/20 border-2 border-yellow/40 flex items-center justify-center text-yellow text-sm font-bold"
+                  >
                     GLOBAL
                   </div>
                 </div>
