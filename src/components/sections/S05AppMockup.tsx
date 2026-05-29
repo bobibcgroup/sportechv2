@@ -77,7 +77,7 @@ export function S05AppMockup() {
               style={{
                 transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
                 transition: reduced ? 'none' : 'transform 0.1s ease-out',
-                willChange: 'transform',
+                willChange: reduced ? 'auto' : 'transform',
               }}
             >
               <motion.div
