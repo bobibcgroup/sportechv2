@@ -31,7 +31,7 @@ export function computeRevenue(totalFans: number): SimulatorResult {
   }
 
   const total = Object.values(streams).reduce((sum, v) => sum + v, 0)
-  const perUserRate = total / activeFans
+  const perUserRate = activeFans === 0 ? 0 : total / activeFans
 
   return { totalFans, activeFans, streams, total, perUserRate }
 }
