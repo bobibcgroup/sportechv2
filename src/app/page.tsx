@@ -7,6 +7,7 @@ import { S05AppMockup } from '@/components/sections/S05AppMockup'
 import { S06Simulator } from '@/components/sections/S06Simulator'
 import { S07Infrastructure } from '@/components/sections/S07Infrastructure'
 import { S08Future } from '@/components/sections/S08Future'
+import { S09Globe } from '@/components/sections/S09Globe'
 
 export default function Page() {
   return (
@@ -20,6 +21,7 @@ export default function Page() {
       <S06Simulator />
       <S07Infrastructure />
       <S08Future />
+      <S09Globe />
     </main>
   )
 }
