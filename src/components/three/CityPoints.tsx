@@ -1,3 +1,5 @@
+'use client'
+
 const POINT_COUNT = 800
 const R = 1.01
 

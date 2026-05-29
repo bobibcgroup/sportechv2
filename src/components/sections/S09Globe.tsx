@@ -9,7 +9,10 @@ import { GlobeCanvasLoader } from '@/components/three/GlobeCanvasLoader'
 
 export function S09Globe() {
   const ref = useRef<HTMLElement>(null)
+  // once: true — for text entry animations (triggers once, stays visible)
   const inView = useInView(ref, { once: true, margin: '-10% 0px' })
+  // once: false — for canvas frameloop and deferred mount (accurately tracks visibility)
+  const canvasInView = useInView(ref, { once: false, margin: '0px' })
   const isMobile = useIsMobile()
   const reduced = useReducedMotion()
 
@@ -55,7 +58,7 @@ export function S09Globe() {
           {/* Right: globe canvas */}
           <div className="flex justify-center lg:justify-end">
             <div className="aspect-square w-full max-w-md mx-auto relative">
-              <GlobeCanvasLoader inView={inView} />
+              <GlobeCanvasLoader inView={canvasInView} />
 
               {isMobile && (
                 <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">

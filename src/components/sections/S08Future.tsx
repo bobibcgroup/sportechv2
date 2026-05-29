@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
@@ -44,11 +44,16 @@ export function S08Future() {
   const inView = useInView(ref, { once: true, margin: '-15% 0px' })
   const isMobile = useIsMobile()
   const reduced = useReducedMotion()
+  const [shouldMountCanvas, setShouldMountCanvas] = useState(false)
+
+  useEffect(() => {
+    if (inView) setShouldMountCanvas(true)
+  }, [inView])
 
   return (
     <section ref={ref} className="relative min-h-screen bg-base flex items-center py-32 overflow-hidden">
       {/* Ambient R3F particle canvas — desktop only */}
-      {!isMobile && (
+      {!isMobile && shouldMountCanvas && (
         <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
           <AmbientCanvas />
         </div>
